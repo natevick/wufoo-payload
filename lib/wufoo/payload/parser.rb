@@ -44,10 +44,6 @@ module Wufoo
         @fields.each { |field, response| @fields[field] = response[0] }
       end
 
-      def joiner
-
-      end
-      #@result is an object and should be a collection object for your payload.
 		end
 
 	end
