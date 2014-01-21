@@ -20,28 +20,28 @@ module Wufoo
 
       def run
         prepare
-        @form_structure.each do |form_attribute, value|
+        @form.each do |form_attribute, value|
 
         end
-        @field_structure['Fields'].each do |field|
+        @fields['Fields'].each do |field|
+          @field = Field.new
           field.each do |attribute, value|
-            @field = FieldStructure.new
             @field.send "#{attribute.underscore}=", value
-            @field.title.each_with_object({}) {|title, join| join[title.squish.downcase.tr(" ", "_")], = @fields.values_at(@field.id)}
-            @field.each { |title, answer| @field[title] = answer[0] }
-            @result.merge(@field)
+            #@field.title.each_with_object({}) {|title, join| join[title.squish.downcase.tr(" ", "_")], = @answers.values_at(@field.id)}
+            #@field.each { |title, answer| @field[title] = answer[0] }
           end
+          @result[@field.title.squish.downcase.tr(" ", "_")] = @answers.values_at(@field.id)
         end
       end
 
       private
 
       def prepare
-        @form_structure = JSON.parse(@data['FormStructure'])
-        @field_structure = JSON.parse(@data['FieldStructure'])
+        @form = MultiJson.decode(@data['FormStructure'])
+        @fields = MultiJson.decode(@data['FieldStructure'])
         field_keys = @data.keys.grep (/\AField\d/)
-        @fields = field_keys.each_with_object({}) {|keys, responses| responses[keys] = @data.values_at(keys)}
-        @fields.each { |field, response| @fields[field] = response[0] }
+        @answers = field_keys.each_with_object({}) {|keys, answers| answers[keys] = @data.values_at(keys)}
+        @answers.each { |field, answer| @answers[field] = answer[0] }
       end
 
 		end
